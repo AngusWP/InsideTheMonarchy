@@ -4,6 +4,7 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 using System;
+using UnityEngine.SceneManagement;
 using UnityEditor.Build;
 
 public class ActionMenu : MonoBehaviour {
@@ -24,6 +25,10 @@ public class ActionMenu : MonoBehaviour {
         openObjects = new List<GameObject>();
         gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
         raiding = gameManager.GetComponent<Raiding>();
+    }
+
+    public void goBackToMenu() {
+        SceneManager.LoadScene(0);
     }
 
     void Update() {

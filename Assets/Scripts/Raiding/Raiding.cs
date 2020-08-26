@@ -33,6 +33,24 @@ public class Raiding : MonoBehaviour {
         jalonn.text = gameManager.relationsWithJalonn + "%";
     }
 
+    private void OnEnable() {
+        if (gameManager.conqueredStatus[GameManager.Kingdom.Cobeth]) {
+            cobethB.interactable = false;
+        }
+
+        if (gameManager.conqueredStatus[GameManager.Kingdom.Rym]) {
+            rymB.interactable = false;
+        }
+
+        if (gameManager.conqueredStatus[GameManager.Kingdom.Galerd]) {
+            galerdB.interactable = false;
+        }
+
+        if (gameManager.conqueredStatus[GameManager.Kingdom.Jalonn]) {
+            jalonnB.interactable = false;
+        }
+    }
+
     public void onClick(string k) {
 
         GameManager.Kingdom kingdom = (GameManager.Kingdom)Enum.Parse(typeof(GameManager.Kingdom), k);

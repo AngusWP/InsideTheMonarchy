@@ -34,6 +34,9 @@ public class GameManager : MonoBehaviour {
 
     public bool gracePeriod = true;
 
+    public Dictionary<Kingdom, bool> warStatus = new Dictionary<Kingdom, bool>();
+    public Dictionary<Kingdom, bool> conqueredStatus = new Dictionary<Kingdom, bool>();
+
     public float soldierPrice;
     public float soldierExpense;
     private float originalSeconds;
@@ -42,6 +45,7 @@ public class GameManager : MonoBehaviour {
     public int yearlyWoodProduce, yearlyStoneProduce, yearlyLeatherProduce;
     public bool taxChanged = false;
     public bool transition = true;
+    public bool isAtWar = false;
 
     public int relationsWithRym, relationsWithJalonn, relationsWithGalerd, relationsWithCobeth;
 
@@ -55,6 +59,7 @@ public class GameManager : MonoBehaviour {
 
     private StatsUI statsUI;
     private ResourceUI resourceUI;
+    private CameraMove cameraMove;
 
     public GameObject cobethTrade, rymTrade, jalonnTrade, galerdTrade;
     List<GameObject> tradeObjects = new List<GameObject>();
@@ -80,10 +85,21 @@ public class GameManager : MonoBehaviour {
         tradeObjects.Add(rymTrade);
         tradeObjects.Add(galerdTrade);
 
+        warStatus.Add(Kingdom.Cobeth, false);
+        warStatus.Add(Kingdom.Jalonn, false);
+        warStatus.Add(Kingdom.Galerd, false);
+        warStatus.Add(Kingdom.Rym, false);
+
+        conqueredStatus.Add(Kingdom.Cobeth, false);
+        conqueredStatus.Add(Kingdom.Jalonn, false);
+        conqueredStatus.Add(Kingdom.Galerd, false);
+        conqueredStatus.Add(Kingdom.Rym, false);
+
         originalTrades = tradesLeft;
         originalSeconds = secondsBetweenYears;
         statsUI = canvas.GetComponent<StatsUI>();
         resourceUI = canvas.GetComponent<ResourceUI>();
+        cameraMove = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<CameraMove>(); 
 
         if (loadedSavedGame()) {
             updateRelations();
@@ -519,6 +535,7 @@ public class GameManager : MonoBehaviour {
     public void goToNextYear() {
         paused = true;
         taxChanged = false;
+        cameraMove.moveDown();
         statsUI.setActive(false);
         resourceUI.setActive(false);
         tradesLeft = originalTrades;

@@ -10,11 +10,13 @@ public class YearlyUI : MonoBehaviour {
     public GameObject yearlyReview;
     private StatsUI statsUI;
     private YearlyEvents yearlyEvents;
+    private CameraMove cameraMove;
     private ResourceUI resourceUI;
 
     void Start() {
         gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
         yearlyEvents = GameObject.FindGameObjectWithTag("GameManager").GetComponent<YearlyEvents>();
+        cameraMove = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<CameraMove>();
         statsUI = GetComponent<StatsUI>();
         resourceUI = GetComponent<ResourceUI>();
     }
@@ -38,6 +40,7 @@ public class YearlyUI : MonoBehaviour {
         yearlyEvents.handleEvents();
         yearlyEvents.checkCivilStatus();
         GetComponent<Transition>().fadeIn();
+        cameraMove.moveUp();
         gameManager.paused = false;
         gameManager.resetYearlyProduce();
         StartCoroutine(statsUI.showUI());

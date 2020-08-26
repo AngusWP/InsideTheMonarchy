@@ -16,6 +16,12 @@ public class YearlyEvents : MonoBehaviour {
     public TMP_Text title, info;
     public GameObject canvas;
 
+    public GameObject invasionSuccess;
+    public TMP_Text invasionSuccessInfo;
+
+    public GameObject invasionFail;
+    public TMP_Text invasionFailInfo;
+
     public int eventChance;
     public int raidPopPercentMin, raidPopPercentMax, raidGoodsPercentMin, raidGoodsPercentMax, plaguePopPercentMin, plaguePopPercentMax;
 
@@ -41,6 +47,51 @@ public class YearlyEvents : MonoBehaviour {
             e = Event.Plague;
         } else if (typeChance <= 24 && typeChance >= 0) {
             e = Event.Drought;
+        }
+
+        if (gameManager.isAtWar) {
+            bool conflict = false;
+            
+            foreach (GameManager.Kingdom k in gameManager.warStatus.Keys) {
+
+                if (conflict) {
+                    return;
+                }
+
+                if (gameManager.warStatus[k] == true) {
+
+                    int invChance = 20;
+                    int random = UnityEngine.Random.Range(1, 100);
+                    
+
+                    if (invChance >= random) {
+                        //been invaded.
+
+                        if (!conflict) conflict = true;
+
+                        int c = 70;
+                        if (gameManager.ownsGarrison) c -= 45;
+                        if (gameManager.ownsWatchtower) c -= 15;
+
+                        if (c >= UnityEngine.Random.Range(1, 100)) {
+                            invasionSuccess.SetActive(true);
+                            invasionSuccessInfo.text = "Unfortunately your Kingdom has been overrun and taken by " + k.ToString() + ". Spikes with your family's heads litter the walls of your keep. Your reign is over.";
+
+                            actionMenu.openObjects.Add(invasionSuccess);
+                            actionMenu.setTask(true);
+                        } else {
+                            invasionFail.SetActive(true);
+                            invasionFailInfo.text = k.ToString() + " have tried to conquer your Kingdom! Luckily, your defenses pulled through. Although you have lost alot of resources, your Kingdom has managed to pull through.";
+
+                            //remove soldiers, population, goods and gold etc....
+
+                            actionMenu.openObjects.Add(invasionFail);
+                            actionMenu.setTask(true);
+                        }
+                    }
+
+                }
+            }
         }
 
         if (e == Event.Raid) {
@@ -79,6 +130,11 @@ public class YearlyEvents : MonoBehaviour {
         if (gameManager.happiness < 15) {
             UnityEngine.Debug.Log("CIVIL WAR CHANCE");
         }
+    }
+
+    public void closeInvasionFail() {
+        actionMenu.openObjects.Remove(invasionFail);
+        actionMenu.setTask(false);
     }
 
     public void runEvent(Event e) {
