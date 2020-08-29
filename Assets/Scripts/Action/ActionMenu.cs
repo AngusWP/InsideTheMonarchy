@@ -6,6 +6,7 @@ using UnityEngine.UI;
 using System;
 using UnityEngine.SceneManagement;
 using UnityEditor.Build;
+using UnityEditor.SceneManagement;
 
 public class ActionMenu : MonoBehaviour {
 
@@ -13,10 +14,13 @@ public class ActionMenu : MonoBehaviour {
     public GameObject actionMenu;
     public bool active = false;
 
-    public GameObject dropdown, canvas, inputField, inputObject, resourceMenu, confirmSale, tradeObject, buildObject, raidObject, spoilsObject;
+    public GameObject dropdown, canvas, inputField, inputObject, resourceMenu, confirmSale, tradeObject, buildObject, raidObject, spoilsObject, invadeObject;
     public TMP_Text infoTextConfirm, relationNo;
 
+    public AudioClip menu;
+
     private Raiding raiding;
+    private Invading invading;
 
     public List<GameObject> openObjects;
     public bool taskOpen = false;
@@ -25,6 +29,7 @@ public class ActionMenu : MonoBehaviour {
         openObjects = new List<GameObject>();
         gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
         raiding = gameManager.GetComponent<Raiding>();
+        invading = gameManager.GetComponent<Invading>();
     }
 
     public void goBackToMenu() {
@@ -52,6 +57,7 @@ public class ActionMenu : MonoBehaviour {
         if (Input.GetKeyDown(KeyCode.Space)) {
             active = !active;
             actionMenu.SetActive(active);
+            AudioSource.PlayClipAtPoint(menu, Camera.main.transform.position);
 
             if (active) {
                 openObjects.Add(actionMenu);
@@ -135,6 +141,14 @@ public class ActionMenu : MonoBehaviour {
         raiding.updateRelationsOnRaidUI();
         raidObject.SetActive(true);
         openObjects.Add(raidObject);
+        setTask(true);
+        removeActionMenu();
+    }
+
+    public void openInvadeMenu() {
+        invading.updateRelationsOnInvadeUI();
+        invadeObject.SetActive(true);
+        openObjects.Add(invadeObject);
         setTask(true);
         removeActionMenu();
     }

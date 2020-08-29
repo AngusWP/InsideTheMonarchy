@@ -8,8 +8,8 @@ using System.Runtime.InteropServices;
 
 public class Raiding : MonoBehaviour {
 
-    public TMP_Text title, coinText, woodText, leatherText, stoneText, relationText, rym, galerd, jalonn, cobeth; // the kingdoms are the relation text objects in the raid menu.
-    public GameObject raidObject, spoils, woodIcon, leatherIcon, stoneIcon, coinIcon, relationObject, failedText;
+    public TMP_Text title, coinText, woodText, leatherText, stoneText, relationText, rym, galerd, jalonn, cobeth, warText; // the kingdoms are the relation text objects in the raid menu.
+    public GameObject raidObject, spoils, woodIcon, leatherIcon, stoneIcon, coinIcon, relationObject, failedText, warTextObj;
     public Button rymB, cobethB, jalonnB, galerdB;
     public bool failed = false;
     private ActionMenu actionMenu;
@@ -34,6 +34,9 @@ public class Raiding : MonoBehaviour {
     }
 
     private void OnEnable() {
+
+        if (gameManager == null) return;
+
         if (gameManager.conqueredStatus[GameManager.Kingdom.Cobeth]) {
             cobethB.interactable = false;
         }
@@ -99,6 +102,14 @@ public class Raiding : MonoBehaviour {
         leatherText.text = leather.ToString();
         coinText.text = gold.ToString();
         relationText.text = "(-" + relations + " relations with " + kingdom.ToString() + ")";
+    
+        if (gameManager.getRelations(kingdom) <= 10) {
+            gameManager.setAtWar(kingdom);
+            gameManager.isAtWar = true;
+
+            warTextObj.SetActive(true);
+            warText.text = "You are now at war with " + kingdom + ".";
+        }
     }
 
     public void setIconStatus(bool b) {

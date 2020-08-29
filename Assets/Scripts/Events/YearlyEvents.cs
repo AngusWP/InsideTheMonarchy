@@ -33,7 +33,7 @@ public class YearlyEvents : MonoBehaviour {
     }
 
     public void handleEvents() {
-        //if (gameManager.gracePeriod) return; for now disable this while we make it all work
+        if (gameManager.gracePeriod) return;
         int chance = UnityEngine.Random.Range(1, 100);
 
         if (!(eventChance >= chance)) return;
@@ -65,7 +65,6 @@ public class YearlyEvents : MonoBehaviour {
                     
 
                     if (invChance >= random) {
-                        //been invaded.
 
                         if (!conflict) conflict = true;
 
@@ -83,7 +82,11 @@ public class YearlyEvents : MonoBehaviour {
                             invasionFail.SetActive(true);
                             invasionFailInfo.text = k.ToString() + " have tried to conquer your Kingdom! Luckily, your defenses pulled through. Although you have lost alot of resources, your Kingdom has managed to pull through.";
 
-                            //remove soldiers, population, goods and gold etc....
+                            gameManager.soldierCount -= ((gameManager.soldierCount / 100) * UnityEngine.Random.Range(20, 40));
+                            gameManager.wood -= ((gameManager.wood / 100) * UnityEngine.Random.Range(10, 20));
+                            gameManager.stone -= ((gameManager.stone / 100) * UnityEngine.Random.Range(10, 20));
+                            gameManager.leather -= ((gameManager.leather / 100) * UnityEngine.Random.Range(10, 20));
+                            gameManager.gold -= ((gameManager.gold / 100) * UnityEngine.Random.Range(10, 20));
 
                             actionMenu.openObjects.Add(invasionFail);
                             actionMenu.setTask(true);

@@ -8,8 +8,12 @@ public class Menu : MonoBehaviour {
     public static int soundSetting = 75;
     public static int musicSetting = 75; // percents, this is the only way I could think to transfer it across scenes.
 
-    public void playGame() {
+    public void startNewGame() {
         SceneManager.LoadScene(1);
+    }
+
+    public void continueGame() {
+
     }
 
     public void exitGame() {

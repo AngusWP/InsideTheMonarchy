@@ -61,6 +61,8 @@ public class GameManager : MonoBehaviour {
     private ResourceUI resourceUI;
     private CameraMove cameraMove;
 
+    private int puppetStates = 0;
+
     public GameObject cobethTrade, rymTrade, jalonnTrade, galerdTrade;
     List<GameObject> tradeObjects = new List<GameObject>();
 
@@ -70,7 +72,7 @@ public class GameManager : MonoBehaviour {
     public int barracksCost, tavernCost, marketCost, watchtowerCost, garrisonCost, druidCost;
     public bool ownsBarracks = false, ownsTavern = false, ownsMarket = false, ownsWatchtower = false, ownsGarrison = false, ownsDruid = false;
 
-    public bool drought = false, plague = false;
+    public bool drought = false, plague = false, won = false;
 
     public float soldierStrength;
 
@@ -101,14 +103,8 @@ public class GameManager : MonoBehaviour {
         resourceUI = canvas.GetComponent<ResourceUI>();
         cameraMove = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<CameraMove>(); 
 
-        if (loadedSavedGame()) {
-            updateRelations();
-            loadGoodsPrices();
-
-        } else {
-            generateGoodPrices();
-            setSliderValues();
-        }
+        generateGoodPrices();
+        setSliderValues();
     }
 
     public void setSliderValues() {
@@ -144,10 +140,6 @@ public class GameManager : MonoBehaviour {
         }
 
         return false;
-    }
-
-    public void loadGoodsPrices() {
-            //like from player prefs
     }
 
     public int getMaxPlayerGoods(Type t) {
@@ -346,10 +338,6 @@ public class GameManager : MonoBehaviour {
         return "";
     }
 
-    public bool loadedSavedGame() {
-        return false;
-    }
-
     public void generateGoodPrices() {
         foreach (List<int> list in allGoods) {
             int wood = Random.Range(minWoodRandom, maxWoodRandom);
@@ -480,19 +468,15 @@ public class GameManager : MonoBehaviour {
         updateTradeStatus(kingdom);
     }
 
-    public void saveRelations() {
-        PlayerPrefs.SetInt("RymRelation", relationsWithRym);
-        PlayerPrefs.SetInt("JalonnRelation", relationsWithJalonn);
-        PlayerPrefs.SetInt("CobethRelation", relationsWithCobeth);
-        PlayerPrefs.SetInt("GalerdRelation", relationsWithGalerd);
-    }
-
     public float calculateTaxReturns() {
         float tax = ((population * popIncome) * taxPercent) / 100;
 
         if (ownsMarket) {
             tax += ((tax / 100) * 25);
         }
+
+        int addition = 1000 * puppetStates;
+        tax += addition;
 
         return tax;
     }
@@ -524,6 +508,8 @@ public class GameManager : MonoBehaviour {
     void Update() {
 
         if (paused) return;
+
+        if (won) return;
 
         if (secondsBetweenYears > 0) {
             secondsBetweenYears -= Time.deltaTime;
@@ -581,7 +567,6 @@ public class GameManager : MonoBehaviour {
         }
 
         if (gold < 0) {
-            Debug.Log("DEBT");
             happiness -= 15;
 
             if (happiness < 0) {
@@ -591,17 +576,61 @@ public class GameManager : MonoBehaviour {
 
         population += (int) (happiness / happinessPopulationModifier * populationModifier);
 
+        if (happiness <= 5) {
+            population -= ((population / 100) * Random.Range(10, 20)); // lose 15% of your population
+        }
+
         GetComponent<Raiding>().setButtonInteractable();
 
         canvas.GetComponent<YearlyUI>().updateUI(oldGold);
+        checkRelations();
+
         year++;
 
         if (year >= gracePeriodYear) gracePeriod = true;
 
         StartCoroutine(showUI());
-
-        saveRelations();
         secondsBetweenYears = originalSeconds;
+    }
+
+    public void setAtWar(Kingdom k) {
+        warStatus[k].Equals(true);
+
+        if (k.Equals(Kingdom.Cobeth)) {
+            tradeCobeth = 2;
+        }
+
+        if (k.Equals(Kingdom.Rym)) {
+            tradeRym = 2;
+        }
+
+        if (k.Equals(Kingdom.Galerd)) {
+            tradeGalerd = 2;
+        }
+
+        if (k.Equals(Kingdom.Jalonn)) {
+            tradeJalonn = 2;
+        }
+
+        isAtWar = true;
+    }
+
+    public void checkRelations() {
+        if (getRelations(Kingdom.Cobeth) <= 10) {
+            setAtWar(Kingdom.Cobeth);
+        }
+
+        if (getRelations(Kingdom.Rym) <= 10) {
+            setAtWar(Kingdom.Rym);
+        }
+
+        if (getRelations(Kingdom.Jalonn) <= 10) {
+            setAtWar(Kingdom.Jalonn);
+        }
+
+        if (getRelations(Kingdom.Galerd) <= 10) {
+            setAtWar(Kingdom.Galerd);
+        }
     }
 
     public void updateHappiness() {
