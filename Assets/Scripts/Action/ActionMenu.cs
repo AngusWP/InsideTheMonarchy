@@ -5,8 +5,6 @@ using TMPro;
 using UnityEngine.UI;
 using System;
 using UnityEngine.SceneManagement;
-using UnityEditor.Build;
-using UnityEditor.SceneManagement;
 
 public class ActionMenu : MonoBehaviour {
 
@@ -112,6 +110,9 @@ public class ActionMenu : MonoBehaviour {
     }
 
     public void manageResources() {
+        foreach (SliderTextUpdate text in resourceMenu.GetComponentsInChildren<SliderTextUpdate>()) {
+            text.onLoad();
+        }
         resourceMenu.SetActive(true);
         removeActionMenu();
         openObjects.Add(resourceMenu);
@@ -201,6 +202,9 @@ public class ActionMenu : MonoBehaviour {
     }
 
     public void confirmRecruitment() {
+        setTask(false);
+        inputField.SetActive(false);
+        openObjects.Remove(inputField);
         string input = inputObject.GetComponent<TMP_InputField>().text;
         TMP_Text warning = canvas.transform.Find("Soldiers").transform.Find("InfoText").GetComponent<TMP_Text>();
 
@@ -217,6 +221,7 @@ public class ActionMenu : MonoBehaviour {
         }
 
         int amountOfSoldiers = int.Parse(input);
+        inputObject.GetComponent<TMP_InputField>().text = "0";
         int price = amountOfSoldiers * (int) gameManager.soldierPrice;
 
         if (price > gameManager.gold) {
@@ -226,9 +231,6 @@ public class ActionMenu : MonoBehaviour {
 
         gameManager.gold -= price;
         gameManager.soldierCount += amountOfSoldiers;
-        openObjects.Remove(inputField);
-        setTask(false);
-        inputField.SetActive(false);
     }
 
     public void onKingdomClick(string s) {
@@ -265,7 +267,10 @@ public class ActionMenu : MonoBehaviour {
         TMP_Text cost = canvas.transform.Find("Soldiers").transform.Find("CostInfo").GetComponent<TMP_Text>();
         string input = inputObject.GetComponent<TMP_InputField>().text;
 
-        if (input == "") return;
+        if (input == "") {
+            cost.text = "";
+            return;
+        }
 
         int amountOfSoldiers = int.Parse(input);
         cost.text = (amountOfSoldiers * (int)gameManager.soldierPrice).ToString();
@@ -277,7 +282,6 @@ public class ActionMenu : MonoBehaviour {
         canvas.transform.Find("Soldiers").transform.Find("InfoText").GetComponent<TMP_Text>().text = warn;
         Button confirm = canvas.transform.Find("Soldiers").transform.Find("Confirm").GetComponent<Button>();
 
-        confirm.onClick.AddListener(onClick);
         if (cost) {
             inputF.onValueChanged.AddListener(delegate { onValueChange(); });
         }

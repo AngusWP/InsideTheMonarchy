@@ -23,7 +23,7 @@ public class YearlyUI : MonoBehaviour {
 
     public void updateUI(float oldGold) {
         year.text = gameManager.get("year");
-        gold.text = oldGold.ToString();
+        gold.text = ((int) oldGold).ToString();
         tax.text = gameManager.get("tax");
         expense.text = gameManager.get("expense");
         happiness.text = gameManager.get("happiness");

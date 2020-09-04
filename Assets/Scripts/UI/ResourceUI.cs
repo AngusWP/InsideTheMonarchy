@@ -85,6 +85,15 @@ public class ResourceUI : MonoBehaviour {
     }
 
     public int getResourcePercent(string prefName) {
-        return PlayerPrefs.GetInt(prefName);
+        switch (prefName) {
+            case "WoodPercent":
+                return gameManager.woodValue;
+            case "StonePercent":
+                return gameManager.stoneValue;
+            case "LeatherPercent":
+                return gameManager.leatherValue;
+        }
+
+        return 0;
     }
 }

@@ -74,6 +74,8 @@ public class GameManager : MonoBehaviour {
 
     public bool drought = false, plague = false, won = false, invadePause = false;
 
+    public int woodValue = 20, stoneValue = 20, leatherValue = 5;
+
     public float soldierStrength;
 
     void Start() {
@@ -109,13 +111,6 @@ public class GameManager : MonoBehaviour {
         cameraMove = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<CameraMove>(); 
 
         generateGoodPrices();
-        setSliderValues();
-    }
-
-    public void setSliderValues() {
-        PlayerPrefs.SetInt("WoodPercent", 15);
-        PlayerPrefs.SetInt("StonePercent", 15);
-        PlayerPrefs.SetInt("LeatherPercent", 15);
     }
 
     public bool hasBuilt(string s) {
@@ -535,14 +530,22 @@ public class GameManager : MonoBehaviour {
         float oldGold = gold;
         float soldierCost = (soldierCount * soldierExpense);
 
+        Debug.Log("Soldier Cost Pre Barracks: " + soldierCost);
+
         if (ownsBarracks) soldierCost = ((soldierCost / 100) * 90);
 
+        Debug.Log("Soldier Cost Post Barracks: " + soldierCost);
+
         yearlyExpenses += soldierCost;
+
+        Debug.Log("Yearly Expenses: " + yearlyExpenses);
 
         generateGoodPrices();
         resourceUI.updateResources();
         resourceUI.updateResourceText();
         yearlyExpenses += resourceUI.loadGoodsExpenses();
+
+        Debug.Log("Yearly Expenses Post Goods: " + yearlyExpenses);
 
         gold -= yearlyExpenses;
         gold += calculateTaxReturns();
@@ -560,10 +563,14 @@ public class GameManager : MonoBehaviour {
 
         if (gold < 0) {
             happiness -= 15;
+        }
 
-            if (happiness < 0) {
-                happiness = 0;
-            }
+        if (isAtWar) {
+            happiness -= Random.Range(5, 10);
+        }
+
+        if (happiness < 0) {
+            happiness = 0;
         }
 
         population += (int) (happiness / happinessPopulationModifier * populationModifier);

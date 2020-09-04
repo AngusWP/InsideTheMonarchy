@@ -81,6 +81,15 @@ public class Raiding : MonoBehaviour {
         int modifier = UnityEngine.Random.Range(3, 7);
 
         gameManager.soldierCount -= ((gameManager.soldierCount / 100) * modifier);
+        relationText.text = "(-" + relations + " relations with " + kingdom.ToString() + ")";
+
+        if (gameManager.getRelations(kingdom) <= 10) {
+            gameManager.setAtWar(kingdom);
+            gameManager.isAtWar = true;
+
+            warTextObj.SetActive(true);
+            warText.text = "You are now at war with " + kingdom + ".";
+        }
 
         if (roll >= failChance) {
             setIconStatus(false);
@@ -101,15 +110,6 @@ public class Raiding : MonoBehaviour {
         stoneText.text = stone.ToString();
         leatherText.text = leather.ToString();
         coinText.text = gold.ToString();
-        relationText.text = "(-" + relations + " relations with " + kingdom.ToString() + ")";
-    
-        if (gameManager.getRelations(kingdom) <= 10) {
-            gameManager.setAtWar(kingdom);
-            gameManager.isAtWar = true;
-
-            warTextObj.SetActive(true);
-            warText.text = "You are now at war with " + kingdom + ".";
-        }
     }
 
     public void setIconStatus(bool b) {

@@ -64,6 +64,10 @@ public static class DataHandler {
             gameManager.relationsWithJalonn = data.relationsWithJalonn;
             gameManager.relationsWithRym = data.relationsWithRym;
 
+            gameManager.woodValue = data.woodValue;
+            gameManager.stoneValue = data.stoneValue;
+            gameManager.leatherValue = data.leatherValue;
+
             GameObject canvas = GameObject.FindGameObjectWithTag("Canvas");
             canvas.GetComponent<ResourceUI>().updateResourceText();
 

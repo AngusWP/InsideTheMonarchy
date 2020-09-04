@@ -35,10 +35,40 @@ public class SliderTextUpdate : MonoBehaviour {
         }
     }
 
-    public void onValueChange() {
+    public void onLoad() {
+
+        if (gameManager == null) {
+            gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
+        }
+
+        if (itemType == GameManager.Type.Wood) {
+            slider.value = gameManager.woodValue;
+        }
+
+        if (itemType == GameManager.Type.Stone) {
+            slider.value = gameManager.stoneValue;
+        }
+
+        if (itemType == GameManager.Type.Leather) {
+            slider.value = gameManager.leatherValue;
+        }
+    }
+
+    public void onValueChange(string s) {
         value = slider.value;
         text.text = value.ToString() + "%";
-        PlayerPrefs.SetInt(slider.gameObject.name + "Percent", (int) value);
+        
+        switch (s) {
+            case "Wood":
+                gameManager.woodValue = (int) slider.value;
+                break;
+            case "Stone":
+                gameManager.stoneValue = (int)slider.value;
+                break;
+            case "Leather":
+                gameManager.leatherValue = (int)slider.value;
+                break;
+        }
     }
 
     public void onBuyOrSell() {

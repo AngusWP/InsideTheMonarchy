@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class Invading : MonoBehaviour {
 
-    public TMP_Text rym, galerd, jalonn, cobeth, invadeF, invadeS;
+    public TMP_Text rym, galerd, jalonn, cobeth, invadeF, invadeS, textS, textF;
     private GameManager gameManager;
 
     public int invadeModifier;
@@ -51,6 +51,24 @@ public class Invading : MonoBehaviour {
         if (chance >= roll) {
             invadeSuccess.SetActive(true);
             gameManager.conqueredStatus[kingdom] = true;
+            gameManager.warStatus[kingdom] = false;
+
+            textS.text = "Your forces have stormed the keep of " + kingdom.ToString() +  ", and have taken the land. Your subjects congratulate you on your victory. " +
+                "There is a cost in victory though, as you have lost good men to claim these lands.";
+
+
+            bool war = false;
+
+            foreach (GameManager.Kingdom kin in gameManager.warStatus.Keys) {
+                    if (gameManager.warStatus[kin]) {
+                    war = true;
+                }
+            }
+
+            if (!war) {
+                gameManager.isAtWar = false;
+            }
+
             gameManager.puppetStates++;
 
             float loss = ((gameManager.soldierCount / 100) * UnityEngine.Random.Range(30, 55));
@@ -66,6 +84,7 @@ public class Invading : MonoBehaviour {
 
         } else {
             invadeFail.SetActive(true);
+            textF.text = "Your forces were unable to overcome " + kingdom.ToString() + " 's defenses. You have lost a large majority of soldiers, and your people's happiness has dropped.";
             gameManager.soldierCount = ((gameManager.soldierCount / 100) * UnityEngine.Random.Range(15, 25)); // keep 15 to 25% 
             gameManager.decreaseRelations(kingdom, 100);
 

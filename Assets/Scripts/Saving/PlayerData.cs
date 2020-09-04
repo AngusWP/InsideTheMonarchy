@@ -23,6 +23,7 @@ public class PlayerData  {
     public Dictionary<GameManager.Kingdom, bool> warStatus = new Dictionary<GameManager.Kingdom, bool>();
     public Dictionary<GameManager.Kingdom, bool> conqueredStatus = new Dictionary<GameManager.Kingdom, bool>();
     public int puppetStates;
+    public int woodValue, stoneValue, leatherValue;
 
     public int relationsWithRym, relationsWithJalonn, relationsWithGalerd, relationsWithCobeth;
 
@@ -57,5 +58,8 @@ public class PlayerData  {
         relationsWithCobeth = gameManager.relationsWithCobeth;
         relationsWithGalerd = gameManager.relationsWithGalerd;
         relationsWithJalonn = gameManager.relationsWithJalonn;
+        woodValue = gameManager.woodValue;
+        stoneValue = gameManager.stoneValue;
+        leatherValue = gameManager.leatherValue;
     }
 }
