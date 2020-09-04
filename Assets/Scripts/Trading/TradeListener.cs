@@ -9,26 +9,29 @@ public class TradeListener : MonoBehaviour {
     private GameManager gameManager;
     public GameManager.Kingdom kingdom;
     private TradingTextUpdater tradingTextUpdater;
-    public bool started = false;
     public Button rymB, cobethB, jalonnB, galerdB;
 
     void Start() {
         gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
         tradingTextUpdater = GetComponent<TradingTextUpdater>();
-        started = true; 
     }
 
     void Update() {
         
     }
 
-    private void OnEnable() {
+    public void onLoad() {
 
         if (tradingTextUpdater == null) {
             tradingTextUpdater = GetComponent<TradingTextUpdater>();
         }
 
-        tradingTextUpdater.updateText(kingdom);
+        if  (gameManager == null) {
+            gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
+        }
+
+        updateRelationsText(kingdom);
+        updatePrices(kingdom);
 
         if (gameManager.warStatus[GameManager.Kingdom.Cobeth] || gameManager.conqueredStatus[GameManager.Kingdom.Cobeth]) {
             cobethB.interactable = false;
@@ -48,6 +51,10 @@ public class TradeListener : MonoBehaviour {
     }
 
     public void updatePrices(GameManager.Kingdom k) {
-        tradingTextUpdater.updatePrice(k);
+            tradingTextUpdater.updatePrice(k);
+    }
+
+    public void updateRelationsText(GameManager.Kingdom k) {
+            tradingTextUpdater.updateText(k);
     }
 }

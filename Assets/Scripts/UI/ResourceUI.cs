@@ -41,6 +41,11 @@ public class ResourceUI : MonoBehaviour {
     }
 
     public void updateResourceText() {
+
+        if (gameManager == null) {
+            gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
+        }
+
         woodNo.text = gameManager.get("wood");
         stoneNo.text = gameManager.get("stone");
         leatherNo.text = gameManager.get("leather");

@@ -33,7 +33,7 @@ public class Raiding : MonoBehaviour {
         jalonn.text = gameManager.relationsWithJalonn + "%";
     }
 
-    private void OnEnable() {
+    public void onLoad() {
 
         if (gameManager == null) return;
 
@@ -72,7 +72,7 @@ public class Raiding : MonoBehaviour {
 
         // make each random number relate to each kingdoms specific resources
 
-        int failChance = 65 + ((int) (gameManager.soldierStrength - 1) * 100);
+        int failChance = 65 + ((int) (gameManager.soldierStrength - 1) * 100) + (int) ((gameManager.soldierCount / 100) * 2);
         // so soldier strength helps raid chances
 
         int roll = UnityEngine.Random.Range(1, 100);

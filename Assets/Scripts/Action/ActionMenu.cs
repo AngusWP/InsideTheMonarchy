@@ -17,10 +17,10 @@ public class ActionMenu : MonoBehaviour {
     public GameObject dropdown, canvas, inputField, inputObject, resourceMenu, confirmSale, tradeObject, buildObject, raidObject, spoilsObject, invadeObject;
     public TMP_Text infoTextConfirm, relationNo;
 
-    public AudioClip menu;
-
     private Raiding raiding;
     private Invading invading;
+    private BuildingUI buildingUI;
+    private TradeListener tradeListener;
 
     public List<GameObject> openObjects;
     public bool taskOpen = false;
@@ -30,6 +30,7 @@ public class ActionMenu : MonoBehaviour {
         gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
         raiding = gameManager.GetComponent<Raiding>();
         invading = gameManager.GetComponent<Invading>();
+        tradeListener = tradeObject.GetComponentInChildren<TradeListener>();
     }
 
     public void goBackToMenu() {
@@ -57,7 +58,6 @@ public class ActionMenu : MonoBehaviour {
         if (Input.GetKeyDown(KeyCode.Space)) {
             active = !active;
             actionMenu.SetActive(active);
-            AudioSource.PlayClipAtPoint(menu, Camera.main.transform.position);
 
             if (active) {
                 openObjects.Add(actionMenu);
@@ -124,6 +124,7 @@ public class ActionMenu : MonoBehaviour {
     }
 
     public void openTradeMenu() {
+        tradeListener.onLoad();
         tradeObject.SetActive(true);
         openObjects.Add(tradeObject);
         setTask(true);
@@ -131,6 +132,8 @@ public class ActionMenu : MonoBehaviour {
     }
 
     public void openBuildMenu() {
+        buildingUI = canvas.GetComponent<BuildingUI>();
+        buildingUI.checkBought();
         buildObject.SetActive(true);
         openObjects.Add(buildObject);
         setTask(true);
@@ -138,6 +141,7 @@ public class ActionMenu : MonoBehaviour {
     }
 
     public void openRaidMenu() {
+        raiding.onLoad();
         raiding.updateRelationsOnRaidUI();
         raidObject.SetActive(true);
         openObjects.Add(raidObject);
@@ -163,6 +167,12 @@ public class ActionMenu : MonoBehaviour {
         setTask(false);
         openObjects.Remove(raidObject);
         raidObject.SetActive(false);
+    }
+
+    public void invadeExitClick() {
+        setTask(false);
+        openObjects.Remove(invadeObject);
+        invadeObject.SetActive(false);
     }
 
     public void spoilsExitClick() {

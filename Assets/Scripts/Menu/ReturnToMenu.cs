@@ -10,7 +10,7 @@ public class ReturnToMenu : MonoBehaviour {
 
     public GameObject returnToMenu;
 
-    private bool open = false;
+    public bool open = false;
 
     void Start() {
         gameManager = GetComponent<GameManager>();

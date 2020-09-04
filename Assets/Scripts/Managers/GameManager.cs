@@ -47,7 +47,7 @@ public class GameManager : MonoBehaviour {
     public bool transition = true;
     public bool isAtWar = false;
 
-    public int relationsWithRym, relationsWithJalonn, relationsWithGalerd, relationsWithCobeth;
+    public int relationsWithRym = 50, relationsWithJalonn = 50, relationsWithGalerd = 50, relationsWithCobeth = 50;
 
     public int rymStone, rymWood, rymLeather, jalonnWood, jalonnStone, jalonnLeather, cobethStone, cobethWood, cobethLeather, galerdWood, galerdStone, galerdLeather;
 
@@ -61,7 +61,7 @@ public class GameManager : MonoBehaviour {
     private ResourceUI resourceUI;
     private CameraMove cameraMove;
 
-    private int puppetStates = 0;
+    public int puppetStates = 0;
 
     public GameObject cobethTrade, rymTrade, jalonnTrade, galerdTrade;
     List<GameObject> tradeObjects = new List<GameObject>();
@@ -72,11 +72,26 @@ public class GameManager : MonoBehaviour {
     public int barracksCost, tavernCost, marketCost, watchtowerCost, garrisonCost, druidCost;
     public bool ownsBarracks = false, ownsTavern = false, ownsMarket = false, ownsWatchtower = false, ownsGarrison = false, ownsDruid = false;
 
-    public bool drought = false, plague = false, won = false;
+    public bool drought = false, plague = false, won = false, invadePause = false;
 
     public float soldierStrength;
 
     void Start() {
+
+        if (DataHandler.hasLoadedFile() && !Menu.newGame) {
+            DataHandler.load(this);
+        } else {
+            warStatus.Add(Kingdom.Cobeth, false);
+            warStatus.Add(Kingdom.Jalonn, false);
+            warStatus.Add(Kingdom.Galerd, false);
+            warStatus.Add(Kingdom.Rym, false);
+
+            conqueredStatus.Add(Kingdom.Cobeth, false);
+            conqueredStatus.Add(Kingdom.Jalonn, false);
+            conqueredStatus.Add(Kingdom.Galerd, false);
+            conqueredStatus.Add(Kingdom.Rym, false);
+        }
+
         allGoods.Add(rymGoodPrices);
         allGoods.Add(jalonnGoodPrices);
         allGoods.Add(galerdGoodPrices);
@@ -86,16 +101,6 @@ public class GameManager : MonoBehaviour {
         tradeObjects.Add(jalonnTrade);
         tradeObjects.Add(rymTrade);
         tradeObjects.Add(galerdTrade);
-
-        warStatus.Add(Kingdom.Cobeth, false);
-        warStatus.Add(Kingdom.Jalonn, false);
-        warStatus.Add(Kingdom.Galerd, false);
-        warStatus.Add(Kingdom.Rym, false);
-
-        conqueredStatus.Add(Kingdom.Cobeth, false);
-        conqueredStatus.Add(Kingdom.Jalonn, false);
-        conqueredStatus.Add(Kingdom.Galerd, false);
-        conqueredStatus.Add(Kingdom.Rym, false);
 
         originalTrades = tradesLeft;
         originalSeconds = secondsBetweenYears;
@@ -119,7 +124,7 @@ public class GameManager : MonoBehaviour {
             return ownsBarracks;
         }
 
-        if (s == "bavern") {
+        if (s == "tavern") {
             return ownsTavern;
         }
 
@@ -314,6 +319,7 @@ public class GameManager : MonoBehaviour {
                     return "At War";
                 }
             case Kingdom.Cobeth:
+
                 if (tradeCobeth == 0) {
                     return "Accepting Trade";
                 }
@@ -351,13 +357,6 @@ public class GameManager : MonoBehaviour {
         }
     }
 
-    public void updateRelations() {
-        relationsWithRym = PlayerPrefs.GetInt("RymRelation");
-        relationsWithJalonn = PlayerPrefs.GetInt("JalonnRelation");
-        relationsWithCobeth = PlayerPrefs.GetInt("CobethRelation");
-        relationsWithGalerd = PlayerPrefs.GetInt("GalerdRelation");
-    }
-
     public void increaseRelations(Kingdom kingdom, int amount) {
         switch (kingdom) {
             case Kingdom.Jalonn:
@@ -388,12 +387,12 @@ public class GameManager : MonoBehaviour {
             case Kingdom.Jalonn:
                 if (atWar(kingdom)) {
                     tradeJalonn = 2;
-                    return;
+                    break;
                 }
 
                 if (relations <= 20) {
                     tradeJalonn = 1;
-                    return;
+                    break;
                 }
 
                 tradeJalonn = 0;
@@ -402,25 +401,26 @@ public class GameManager : MonoBehaviour {
             case Kingdom.Rym:
                 if (atWar(kingdom)) {
                     tradeRym = 2;
-                    return;
+                    break;
                 }
 
                 if (relations <= 20) {
                     tradeRym = 1;
-                    return;
+                    break;
                 }
 
                 tradeRym = 0;
                 break;
             case Kingdom.Cobeth:
+
                 if (atWar(kingdom)) {
                     tradeCobeth = 2;
-                    return;
+                    break;
                 }
 
                 if (relations <= 20) {
                     tradeCobeth = 1;
-                    return;
+                    break;
                 }
 
                 tradeCobeth = 0;
@@ -428,12 +428,12 @@ public class GameManager : MonoBehaviour {
             case Kingdom.Galerd:
                 if (atWar(kingdom)) {
                     tradeGalerd = 2;
-                    return;
+                    break;
                 }
 
                 if (relations <= 20) {
                     tradeGalerd = 1;
-                    return;
+                    break;
                 }
 
                 tradeGalerd = 0;
@@ -442,7 +442,7 @@ public class GameManager : MonoBehaviour {
     }
 
     public bool atWar(Kingdom kingdom) {
-        return false;
+        return warStatus[kingdom];
     }
 
     public void decreaseRelations(Kingdom kingdom, int amount) {
@@ -464,8 +464,6 @@ public class GameManager : MonoBehaviour {
                 if (relationsWithGalerd < 0) relationsWithGalerd = 0;
                 break;
         }
-
-        updateTradeStatus(kingdom);
     }
 
     public float calculateTaxReturns() {
@@ -508,7 +506,8 @@ public class GameManager : MonoBehaviour {
     void Update() {
 
         if (paused) return;
-
+        if (invadePause) return;
+        if (GetComponent<ReturnToMenu>().open) return;
         if (won) return;
 
         if (secondsBetweenYears > 0) {
@@ -532,13 +531,6 @@ public class GameManager : MonoBehaviour {
         // just incase. ^
 
         canvas.GetComponent<Transition>().fadeOut();
-
-
-        foreach (GameObject obj in tradeObjects) {
-            if (obj.GetComponent<TradeListener>().started) {
-                obj.GetComponent<TradingTextUpdater>().updateText(obj.GetComponent<TradeListener>().kingdom);
-            }
-        }
 
         float oldGold = gold;
         float soldierCost = (soldierCount * soldierExpense);
@@ -591,10 +583,12 @@ public class GameManager : MonoBehaviour {
 
         StartCoroutine(showUI());
         secondsBetweenYears = originalSeconds;
+
+        DataHandler.save(this);
     }
 
     public void setAtWar(Kingdom k) {
-        warStatus[k].Equals(true);
+        warStatus[k] = true;
 
         if (k.Equals(Kingdom.Cobeth)) {
             tradeCobeth = 2;

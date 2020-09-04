@@ -11,8 +11,6 @@ public class BuildingUI : MonoBehaviour {
 
     private GameManager gameManager;
 
-    //NOTE: MAKE SURE TO UPDATE THIS WHEN SHIT GETS DESTROYED. ALSO MAKE SURE TO ADD EACH BUILDING TO "HAS BUILT"
-
     void Start() {
         gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
         loadCost();
@@ -33,11 +31,19 @@ public class BuildingUI : MonoBehaviour {
     }
 
     public void checkBought() {
+
+        if (gameManager == null) {
+            gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
+        }
+
+        Debug.Log("0");
+
         if (gameManager.hasBuilt("barracks")) {
             barracks.interactable = false;
         }
 
         if (gameManager.hasBuilt("tavern")) {
+            Debug.Log("1");
             tavern.interactable = false;
         }
 
