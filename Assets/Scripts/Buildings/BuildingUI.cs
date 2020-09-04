@@ -36,8 +36,6 @@ public class BuildingUI : MonoBehaviour {
             gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
         }
 
-        Debug.Log("0");
-
         if (gameManager.hasBuilt("barracks")) {
             barracks.interactable = false;
         }
