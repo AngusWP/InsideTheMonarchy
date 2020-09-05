@@ -530,22 +530,14 @@ public class GameManager : MonoBehaviour {
         float oldGold = gold;
         float soldierCost = (soldierCount * soldierExpense);
 
-        Debug.Log("Soldier Cost Pre Barracks: " + soldierCost);
-
         if (ownsBarracks) soldierCost = ((soldierCost / 100) * 90);
 
-        Debug.Log("Soldier Cost Post Barracks: " + soldierCost);
-
         yearlyExpenses += soldierCost;
-
-        Debug.Log("Yearly Expenses: " + yearlyExpenses);
 
         generateGoodPrices();
         resourceUI.updateResources();
         resourceUI.updateResourceText();
         yearlyExpenses += resourceUI.loadGoodsExpenses();
-
-        Debug.Log("Yearly Expenses Post Goods: " + yearlyExpenses);
 
         gold -= yearlyExpenses;
         gold += calculateTaxReturns();

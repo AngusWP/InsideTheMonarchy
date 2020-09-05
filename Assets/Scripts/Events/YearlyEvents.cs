@@ -33,7 +33,6 @@ public class YearlyEvents : MonoBehaviour {
     }
 
     public void handleEvents() {
-        if (gameManager.gracePeriod) return;
         int chance = UnityEngine.Random.Range(1, 100);
 
         if (!(eventChance >= chance)) return;

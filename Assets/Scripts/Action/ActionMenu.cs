@@ -15,6 +15,8 @@ public class ActionMenu : MonoBehaviour {
     public GameObject dropdown, canvas, inputField, inputObject, resourceMenu, confirmSale, tradeObject, buildObject, raidObject, spoilsObject, invadeObject;
     public TMP_Text infoTextConfirm, relationNo;
 
+    public Button rym, galerd, jalonn, cobeth;
+
     private Raiding raiding;
     private Invading invading;
     private BuildingUI buildingUI;
@@ -152,6 +154,7 @@ public class ActionMenu : MonoBehaviour {
 
     public void openInvadeMenu() {
         invading.updateRelationsOnInvadeUI();
+        invading.updateButtons(rym, galerd, jalonn, cobeth);
         invadeObject.SetActive(true);
         openObjects.Add(invadeObject);
         setTask(true);

@@ -51,10 +51,18 @@ public class TradeListener : MonoBehaviour {
     }
 
     public void updatePrices(GameManager.Kingdom k) {
-            tradingTextUpdater.updatePrice(k);
+        if (tradingTextUpdater == null) {
+            tradingTextUpdater = GetComponent<TradingTextUpdater>();
+        }
+
+        tradingTextUpdater.updatePrice(k);
     }
 
     public void updateRelationsText(GameManager.Kingdom k) {
-            tradingTextUpdater.updateText(k);
+        if (tradingTextUpdater == null) {
+            tradingTextUpdater = GetComponent<TradingTextUpdater>();
+        }
+
+        tradingTextUpdater.updateText(k);
     }
 }

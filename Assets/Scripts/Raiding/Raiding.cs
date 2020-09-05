@@ -64,11 +64,11 @@ public class Raiding : MonoBehaviour {
         actionMenu.openObjects.Remove(raidObject);
         actionMenu.openObjects.Add(spoils);
 
-        int wood = UnityEngine.Random.Range(25, 40);
-        int stone = UnityEngine.Random.Range(20, 35);
-        int leather = UnityEngine.Random.Range(7, 15);
-        int gold = UnityEngine.Random.Range(70, 120);
-        int relations = UnityEngine.Random.Range(30, 40);
+        int wood = UnityEngine.Random.Range(40, 70);
+        int stone = UnityEngine.Random.Range(30, 50);
+        int leather = UnityEngine.Random.Range(10, 20);
+        int gold = UnityEngine.Random.Range(200, 350);
+        int relations = UnityEngine.Random.Range(20, 35);
 
         // make each random number relate to each kingdoms specific resources
 
